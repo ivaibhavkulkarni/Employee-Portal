@@ -1,0 +1,45 @@
+
+.nav-bar-dash{
+    background-image: linear-gradient(to right,#fffffffe,lightgrey,red,orange,indigo,skyblue,violet);
+    width: 100%;
+    padding:0px;
+    display: flex;
+    justify-content:space-between;
+    flex-direction:row;
+}
+
+
+.img {
+    width: 65px;
+    height: 65px;
+    cursor: pointer;
+}
+
+.nav{
+    display: flex;
+    flex-direction: row;
+}
+
+.nav-2{
+    align-self: center;
+}
+
+.Dbutton{
+    color:black;
+    border-width: 0px;
+    background-color: transparent;
+    padding: 5px;
+    margin-left: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.logbutton{
+    color:black;
+    border-width: 0px;
+    background-color: transparent;
+    padding: 5px;
+    margin-right: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}

@@ -1,0 +1,61 @@
+.submit-button{
+    background-color: #0080FF;
+    color: white;
+    border-width: 0px;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 20px;
+    width: 50%;
+    height: 35px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 60px;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+form {
+    margin: 10px;
+    width: 25%;
+    padding: 20px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: #f9f9f9; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+label {
+    display: block; 
+    margin-bottom: 5px; 
+    font-weight: bold; 
+}
+
+input[type="text"],
+input[type="email"],
+input[type="file"],
+select {
+    width: 100%; 
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+
+.gender-container {
+    margin-bottom: 15px; 
+    display: flex;
+}
+
+.gender-container label {
+    margin-right: 20px; 
+}
+

@@ -1,0 +1,21 @@
+.nav-bar{
+    background-image: linear-gradient(to right,#fffffffe,lightgrey,red,orange,indigo,skyblue,violet);
+    width: 100%;
+    padding:0px;
+}
+
+.img {
+    width: 65px;
+    height: 65px;
+}
+
+.nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.apple-text{
+    margin-right:20px;
+}
