@@ -1,6 +1,7 @@
 # Employee Portal (MERN Stack)
 
-## Description: Built a full-stack employee management portal using MongoDB, Express.js, React.js, and Node.js.
+## Description: 
+- Built a full-stack employee management portal using MongoDB, Express.js, React.js, and Node.js.
 
 ## Features:
 
