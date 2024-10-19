@@ -1,101 +1,80 @@
 const express = require('express');
-const multer = require('multer');
-const Employee = require('../models/employee');
-const authenticateToken = require('../middlewares/auth');
+const Employee = require('../models/Employee');
 
 const router = express.Router();
 
 
-// Multer setup for file uploads (storing in uploads/ directory)
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
-const upload = multer({ storage });
+// Add Employee
 
+router.post('/addEmployee', async(request,response) =>{
+    const { name, email, mobile, gender, designation, course, picture} = request.body;
 
-// Create a new employee
-router.post('/employees', authenticateToken, upload.single('picture'), async (req, res) => {
-    try {
-        const { name, email, mobile, designation, gender, course } = req.body;
-        const employee = new Employee({
-            name,
-            email,
-            mobile,
-            designation,
-            gender,
-            course,
-            picture: req.file.filename,  // Store uploaded file's name
-        });
+    try{
+        const employee = new Employee({ name, email, mobile, gender, designation, course, picture});
         await employee.save();
-        res.status(201).json({ message: 'Employee created successfully', employee });
-    } catch (error) {
-        console.error('Error creating employee:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        response.status(201).json(employee);
+    }
+    catch (error) {
+        response.status(500).json({ error: error.message });
     }
 });
 
 
-// Get all employees
-router.get('/employees', authenticateToken, async (req, res) => {
+// Get Employee
+
+router.get('/employee', async (req, res) => {
     try {
         const employees = await Employee.find();
         res.json(employees);
     } catch (error) {
-        console.error('Error fetching employees:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: error.message });
     }
 });
 
+// Get Employee by ID
 
-// Get employee by ID
-router.get('/employees/:id', authenticateToken, async (req, res) => {
-    try {
-        const employee = await Employee.findById(req.params.id);
-        if (!employee) {
-            return res.status(404).json({ error: 'Employee not found' });
+router.get('/employee/:id', async(req,res) =>{
+    try{
+        const employeeId = req.params;
+        const employee = await Employee.findById(employeeId);
+
+        if(!employee){
+            return res.status(404).json({ error: 'Employee not found' })
         }
-        res.json(employee);
+        res.json(employee)
+    }
+    catch(error){
+        res.status(500).json({ error: 'error.message'});
+    }
+});
+
+// Update Employee
+
+router.put('/employee/:id', async (request, response) => {
+    const { id } = request.params;
+    const { name, email, mobile, gender, designation, course, picture } = request.body;
+
+    try {
+        const updatedEmployee = await Employee.findByIdAndUpdate(id, { name, email, mobile, gender, designation, course, picture }, { new: true });
+        if (!updatedEmployee) return response.status(404).json({ message: 'Employee not found' });
+        response.json(updatedEmployee);
     } catch (error) {
-        console.error('Error fetching employee:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        response.status(500).json({ error: error.message });
     }
 });
 
 
+// Delete Employee
 
-// Update employee by ID
-router.put('/employees/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const { name, email, mobile, designation, gender, course } = req.body;
-        const updatedEmployee = await Employee.findByIdAndUpdate(
-            req.params.id,
-            { name, email, mobile, designation, gender, course },
-            { new: true }
-        );
-        res.json({ message: 'Employee updated successfully', updatedEmployee });
-    } catch (error) {
-        console.error('Error updating employee:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-// Delete employee by ID
-router.delete('/employees/:id', authenticateToken, async (req, res) => {
-    try {
-        const employee = await Employee.findByIdAndDelete(req.params.id);
-        if (!employee) {
-            return res.status(404).json({ error: 'Employee not found' });
-        }
+        const deletedEmployee = await Employee.findByIdAndDelete(id);
+        if (!deletedEmployee) return res.status(404).json({ message: 'Employee not found' });
         res.json({ message: 'Employee deleted successfully' });
     } catch (error) {
-        console.error('Error deleting employee:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: error.message });
     }
 });
 

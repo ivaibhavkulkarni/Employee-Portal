@@ -1,26 +1,21 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');  
-const userRoutes = require('./Routes/user'); 
-const employeeRoutes = require('./Routes/employee'); 
+const express = require("express");
+const connectDB = require("./config/db");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// connect DB
+
+connectDB();
+
+// Parse json 
 app.use(express.json());
-app.use(cors());  
-
-mongoose.connect('mongodb://localhost:27017/employeeDB', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected successfully'))
-.catch((error) => console.error('MongoDB connection error:', error));
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/employees', employeeRoutes); 
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/employees',require('./routes/employee'));
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server Running on port ${PORT}`);
 });
