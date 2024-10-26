@@ -36,8 +36,8 @@ class Table extends Component{
                             <td>{employee.course}</td>
                             <td>{employee.addDate}</td>
                             <td>
-                                <button className='table-button' onClick={()=>onEdit(employee.id)}>Edit</button>
-                                <button className='table-button' onClick={()=>onDelete(employee.id)}>Delete</button>    
+                                <button className='dashboard-table-button' onClick={()=>onEdit(employee.id)}>Edit</button>
+                                <button className='dashboard-table-button' onClick={()=>onDelete(employee.id)}>Delete</button>    
                             </td>        
                         </tr>
                     ))}
