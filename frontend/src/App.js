@@ -5,7 +5,7 @@ import Dashboard from './Components/Dashboard/DashBoard';
 
 
 const App = () =>{
-  return <Dashboard/>
+  return <Login/>
 }
 
 export default App;
