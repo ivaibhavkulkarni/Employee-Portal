@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Components/Loginpage/login';
-import Dashboard from './Components/Dashboard/DashBoard'; 
+import Dashboard from './Components/Dashboard/DashBoard';
 
 const App = () => {
   return (
@@ -12,6 +12,6 @@ const App = () => {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

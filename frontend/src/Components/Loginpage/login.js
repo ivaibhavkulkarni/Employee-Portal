@@ -9,18 +9,15 @@ class Login extends Component {
         showLogin: true,
         username: '',
         password: '',
-        errorMessage: '' 
+        errorMessage: ''
     };
-
 
     toggleForm = () => {
         this.setState({ showLogin: !this.state.showLogin });
     };
 
-
     handleLogin = async () => {
         const { username, password } = this.state;
-
         try {
             const response = await fetch("http://localhost:5000/api/userRoutes/login", {
                 method: 'POST',
@@ -41,8 +38,6 @@ class Login extends Component {
             this.setState({ errorMessage: 'An error occurred. Please try again.' });
         }
     };
-
-
 
     render() {
         return (
