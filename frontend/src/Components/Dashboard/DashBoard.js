@@ -30,7 +30,7 @@ class Dashboard extends Component {
         this.setState({
             isEditing: true,
             editingEmployeeId: id,
-            activitySection: 'editEmployee', // Set this to show the Edit form
+            activitySection: 'editEmployee',
         });
     };
 
@@ -48,7 +48,6 @@ class Dashboard extends Component {
         });
     };
 
-    // Fetch the employee being edited
     getEditingEmployee = () => {
         return this.state.employees.find(emp => emp.id === this.state.editingEmployeeId);
     };
@@ -56,6 +55,9 @@ class Dashboard extends Component {
     render() {
         const { employees, activitySection, isEditing } = this.state;
         const editingEmployee = this.getEditingEmployee();
+
+        // Retrieve the username from local storage
+        const username = localStorage.getItem('username');
 
         return (
             <div>
@@ -66,7 +68,7 @@ class Dashboard extends Component {
                     )}
 
                     {!isEditing && activitySection === 'welcome' && (
-                        <h1 className='Welcomeheading'>Welcome Username</h1>
+                        <h1 className='Welcomeheading'>Welcome {username}</h1> // Display the username
                     )}
 
                     {!isEditing && activitySection === 'employeeList' && (

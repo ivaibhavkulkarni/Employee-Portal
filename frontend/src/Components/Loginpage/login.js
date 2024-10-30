@@ -29,6 +29,7 @@ class Login extends Component {
 
             if (response.ok) {
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('username', username); // Store the username
                 this.setState({ errorMessage: '' });
                 this.props.navigate('/dashboard');
             } else {

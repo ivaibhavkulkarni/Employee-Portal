@@ -1,4 +1,3 @@
-// DashboardNav.js
 import './dashnav.css';
 import applelogo from './apple-logo.png';
 import { Component } from 'react';
@@ -7,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 class DashboardNav extends Component {
     handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username'); // Clear the username
         this.props.navigate('/');         
     };
 
