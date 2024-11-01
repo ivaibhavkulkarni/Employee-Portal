@@ -39,3 +39,7 @@ table th {
     margin-top: 10px;
 }
 
+
+.dashboard-table-button:hover {
+    background-color: #005bb5;
+}

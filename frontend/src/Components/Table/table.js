@@ -26,7 +26,7 @@ class Table extends Component{
                 <tbody>
                     {employees.map(employee =>(
                         <tr key={employee.id}>
-                            <td>{employee.id}</td>
+                            <td>{String(employee._id).slice(-3)}</td>
                             <td><img src={employee.picture} alt={`${employee.name}'s profile`} className='employee-img'/></td>
                             <td>{employee.name}</td>
                             <td>{employee.email}</td>
