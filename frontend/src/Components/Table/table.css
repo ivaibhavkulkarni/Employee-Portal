@@ -36,5 +36,6 @@ table th {
     cursor: pointer;
     padding: 5px;
     width: 50px;
+    margin-top: 10px;
 }
 

@@ -4,26 +4,28 @@ import DashboradNav from '../DashboradNavbar/dashboardnav';
 import Table from '../Table/table';
 import AddEmployeeForm from '../AddEmployee/addEmployee';
 import EditEmployeeForm from '../Edituser/edituser';
+import axios from 'axios';
 
 class Dashboard extends Component {
     state = {
-        employees: [
-            {
-                id: 1,
-                picture: 'https://th.bing.com/th/id/OIP.Nji0tUhiIonyCNLRaHA6qAHaHa?rs=1&pid=ImgDetMain',
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                mobile: '1234567890',
-                designation: 'Software Engineer',
-                gender: 'Male',
-                course: 'Computer Science',
-                addDate: '2024-09-29',
-            },
-            // Add more employee objects if needed
-        ],
+        employees: [],  // Initially empty; will be populated by API data
         activitySection: 'welcome',
         isEditing: false,
         editingEmployeeId: null,
+    };
+
+    componentDidMount() {
+        // Fetch employees data when the component mounts
+        this.fetchEmployees();
+    }
+
+    fetchEmployees = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/employeeRoutes/get');
+            this.setState({ employees: response.data });
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
     };
 
     handleEdit = (id) => {
@@ -34,10 +36,13 @@ class Dashboard extends Component {
         });
     };
 
-    handleDelete = (id) => {
-        this.setState((prevState) => ({
-            employees: prevState.employees.filter(employee => employee.id !== id),
-        }));
+    handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/employeeRoutes/delete/${id}`);
+            this.fetchEmployees();  // Refresh the employees list after deletion
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+        }
     };
 
     handleNavClicks = (section) => {
@@ -68,7 +73,7 @@ class Dashboard extends Component {
                     )}
 
                     {!isEditing && activitySection === 'welcome' && (
-                        <h1 className='Welcomeheading'>Welcome {username}</h1> // Display the username
+                        <h1 className='Welcomeheading'>Welcome {username}</h1>
                     )}
 
                     {!isEditing && activitySection === 'employeeList' && (
