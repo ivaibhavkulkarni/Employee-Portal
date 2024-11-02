@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import axios from 'axios';
 import './edituser.css';
 
 class EditEmployeeForm extends Component {
@@ -28,9 +29,39 @@ class EditEmployeeForm extends Component {
         });
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state); 
+        const { name, email, mobile, designation, gender, course } = this.state;
+        const { employee } = this.props;
+        const formData = new FormData();
+
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('mobile', mobile);
+        formData.append('designation', designation);
+        formData.append('gender', gender);
+        formData.append('course', course);
+
+        if (this.state.picture && this.state.picture !== employee.picture) {
+            formData.append('picture', this.state.picture);
+        }
+
+        try {
+            await axios.put(`http://localhost:5000/api/employeeRoutes/edit/${employee._id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            alert("Employee updated successfully!");
+
+            // Call the onUpdate callback to refresh employee list and switch back to list view
+            if (this.props.onUpdate) {
+                this.props.onUpdate();
+            }
+        } catch (error) {
+            console.error("Error updating employee:", error);
+            alert("Failed to update employee. Please try again.");
+        }
     }
 
     render() {

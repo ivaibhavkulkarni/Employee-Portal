@@ -46,11 +46,17 @@ class Dashboard extends Component {
     };
 
     handleNavClicks = (section) => {
+        // Update activity section and reset editing status
         this.setState({
             activitySection: section,
             isEditing: false,
             editingEmployeeId: null,
         });
+
+        // Fetch employees if navigating to the employee list section
+        if (section === 'employeeList') {
+            this.fetchEmployees();
+        }
     };
 
     getEditingEmployee = () => {
