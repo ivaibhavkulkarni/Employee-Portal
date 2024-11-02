@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './addEmployee.css';
+import axios from 'axios'; 
 
 class AddEmployeeForm extends Component {
     constructor(props) {
@@ -28,23 +29,46 @@ class AddEmployeeForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state);
+        
+        const formData = new FormData();
+        for (const key in this.state) {
+            formData.append(key, this.state[key]);
+        }
+
+        axios.post('http://localhost:5000/api/employeeRoutes/add', formData)
+            .then(response => {
+                alert('Employee added successfully!'); // Show alert on success
+                // Optionally, reset the form or redirect the user
+                this.setState({
+                    name: '',
+                    email: '',
+                    mobile: '',
+                    designation: '',
+                    gender: '',
+                    course: 'Computer Science',
+                    picture: null,
+                });
+            })
+            .catch(error => {
+                console.error("There was an error adding the employee:", error);
+                alert('Error adding employee. Please try again.'); // Show alert on error
+            });
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>Name:</label>
-                <input type='text' name='name' value={this.state.name} onChange={this.handleChange} />
+                <input type='text' name='name' value={this.state.name} onChange={this.handleChange} required />
 
                 <label>Email:</label>
-                <input type='email' name='email' value={this.state.email} onChange={this.handleChange} />
+                <input type='email' name='email' value={this.state.email} onChange={this.handleChange} required />
 
                 <label>Mobile:</label>
-                <input type='text' name='mobile' value={this.state.mobile} onChange={this.handleChange} />
+                <input type='text' name='mobile' value={this.state.mobile} onChange={this.handleChange} required />
 
                 <label>Designation:</label>
-                <input type='text' name='designation' value={this.state.designation} onChange={this.handleChange} />
+                <input type='text' name='designation' value={this.state.designation} onChange={this.handleChange} required />
 
                 <label>Gender:</label>
                 <div className="gender-container">
