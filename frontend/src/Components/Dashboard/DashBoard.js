@@ -28,17 +28,17 @@ class Dashboard extends Component {
         }
     };
 
-    handleEdit = (id) => {
+    handleEdit = (_id) => {
         this.setState({
             isEditing: true,
-            editingEmployeeId: id,
+            editingEmployeeId:_id,
             activitySection: 'editEmployee',
         });
     };
 
-    handleDelete = async (id) => {
+    handleDelete = async (_id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/employeeRoutes/delete/${id}`);
+            await axios.delete(`http://localhost:5000/api/employeeRoutes/delete/${_id}`);
             this.fetchEmployees();  // Refresh the employees list after deletion
         } catch (error) {
             console.error("Error deleting employee:", error);
@@ -60,7 +60,7 @@ class Dashboard extends Component {
     };
 
     getEditingEmployee = () => {
-        return this.state.employees.find(emp => emp.id === this.state.editingEmployeeId);
+        return this.state.employees.find(emp => emp._id === this.state.editingEmployeeId);
     };
 
     render() {

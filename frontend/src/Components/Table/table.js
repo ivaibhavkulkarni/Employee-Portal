@@ -25,7 +25,7 @@ class Table extends Component{
                 </thead>
                 <tbody>
                     {employees.map(employee =>(
-                        <tr key={employee.id}>
+                        <tr key={employee._id}>
                             <td>{String(employee._id).slice(-3)}</td>
                             <td><img src={employee.picture} alt={`${employee.name}'s profile`} className='employee-img'/></td>
                             <td>{employee.name}</td>
@@ -36,8 +36,8 @@ class Table extends Component{
                             <td>{employee.course}</td>
                             <td>{employee.addDate}</td>
                             <td>
-                                <button className='dashboard-table-button' onClick={()=>onEdit(employee.id)}>Edit</button>
-                                <button className='dashboard-table-button' onClick={()=>onDelete(employee.id)}>Delete</button>    
+                                <button className='dashboard-table-button' onClick={()=>onEdit(employee._id)}>Edit</button>
+                                <button className='dashboard-table-button' onClick={()=>onDelete(employee._id)}>Delete</button>    
                             </td>        
                         </tr>
                     ))}
