@@ -149,15 +149,6 @@ class EditEmployeeForm extends Component {
                     onChange={this.handleChange}
                 />
 
-                <label>Add Date:</label>
-                <input
-                    type="date"
-                    name="addDate"
-                    value={this.state.addDate}
-                    readOnly
-                    required
-                />
-
                 <button type="submit" className='submit-button'>Update Employee</button>
             </form>
         );
