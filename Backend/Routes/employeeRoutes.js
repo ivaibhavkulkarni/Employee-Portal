@@ -2,45 +2,38 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const Employee = require('../models/employee');
-const { request } = require('https');
-const { error } = require('console');
+const authMiddleware = require('../middleware/authMiddleware'); // Import the auth middleware
 const router = express.Router();
 
 // Configure multer for file uploads
-
 const storage = multer.diskStorage({
-    destination: (request, file, cb) => {
-        cb(null,'uploads/');
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
     },
-    filename: (request, file, cb) =>{
-        cb(null,Date.now() + path.extname(file.originalname)) // for unique file name 
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // for unique file name
     }
 });
 
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 
-// Get all employee
-
-router.get('/get', async(request,respose) =>{
-    try{
-        const employee = await Employee.find();
-        respose.json(employee);
-    }
-    catch (error){
-        respose.status(500).json({message: 'Error fetching employees'});
+// Get all employees - Protected Route
+router.get('/get', authMiddleware, async (req, res) => {
+    try {
+        const employees = await Employee.find();
+        res.json(employees);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching employees' });
     }
 });
 
-
-// Create a new Employee 
-
-router.post('/add',upload.single('picture'), async(request,respose)=> {
-    try{
-        const {name, email, mobile, gender, designation, course} = request.body;
-        const picturePath = request.file ? `/uploads/${request.file.filename}` : ``;
+// Create a new employee - Protected Route
+router.post('/add', authMiddleware, upload.single('picture'), async (req, res) => {
+    try {
+        const { name, email, mobile, gender, designation, course } = req.body;
+        const picturePath = req.file ? `/uploads/${req.file.filename}` : '';
 
         const newEmployee = new Employee({
-
             name,
             email,
             mobile,
@@ -51,24 +44,20 @@ router.post('/add',upload.single('picture'), async(request,respose)=> {
         });
 
         await newEmployee.save();
-        respose.status(201).json(newEmployee);
-    }
-    catch(error){
-        respose.status(400).json({error: error.message})
+        res.status(201).json(newEmployee);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
+// Edit Employee - Protected Route
+router.put('/edit/:id', authMiddleware, upload.single('picture'), async (req, res) => {
+    try {
+        const employeeId = req.params.id;
+        const { name, email, mobile, gender, designation, course } = req.body;
+        const picturePath = req.file ? `/uploads/${req.file.filename}` : undefined;
 
-// Edit Employee 
-
-router.put('/edit/:id', upload.single('picture'), async(request,response) =>{
-    try{
-        const employeeId = request.params.id;
-        const { name, email, mobile, gender, designation, course} = request.body;
-        const picturePath = request.file ? `uploads/${request.file.filename}` : undefined;
-
-        // find employee by id and update 
-        const updateEmployee = await Employee.findByIdAndUpdate(
+        const updatedEmployee = await Employee.findByIdAndUpdate(
             employeeId,
             {
                 name,
@@ -77,53 +66,45 @@ router.put('/edit/:id', upload.single('picture'), async(request,response) =>{
                 gender,
                 designation,
                 course,
-                ...(picturePath && {picture: picturePath}),
+                ...(picturePath && { picture: picturePath }),
             },
-            {new: true}
+            { new: true }
         );
-        
-        if(!updateEmployee){
-            return response.status(404).json({error: 'Employee not found'});
+
+        if (!updatedEmployee) {
+            return res.status(404).json({ error: 'Employee not found' });
         }
 
-        response.status(200).json(updateEmployee);
-    }
-    catch (error){
-        response.status(400).json({error: error.message});
+        res.status(200).json(updatedEmployee);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
+// Delete by id - Protected Route
+router.delete('/delete/:id', authMiddleware, async (req, res) => {
+    try {
+        const employeeId = req.params.id;
 
-// Delete by id 
+        const deletedEmployee = await Employee.findByIdAndDelete(employeeId);
 
-router.delete('/delete/:id', async (request,response) =>{
-    try{
-        const employeeId = request.params.id;
-
-        const deleteEmployee = await Employee.findByIdAndDelete(employeeId);
-
-        if(!deleteEmployee){
-            return response.status(404).json({error: 'Employee not found'});
+        if (!deletedEmployee) {
+            return res.status(404).json({ error: 'Employee not found' });
         }
 
-        response.status(200).json({message: 'Employee deleted successfully'});
-    }
-    catch (error){
-        response.status(400).json({error: error.message});
-    }
-});
-
-
-// Testing
-
-router.get('/Message',async(request,response) =>{
-    try{
-        response.send("Connected to Server message from backend");
-    }
-    catch (error){
-        response.status(500).json({message: 'Error fetching data'})
+        res.status(200).json({ message: 'Employee deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
+// Testing route
+router.get('/message', async (req, res) => {
+    try {
+        res.send("Connected to Server message from backend");
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching data' });
+    }
+});
 
 module.exports = router;
