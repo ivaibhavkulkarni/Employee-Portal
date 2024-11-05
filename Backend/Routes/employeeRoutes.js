@@ -1,38 +1,41 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const Employee = require('../models/employee');
-const authMiddleware = require('../middleware/authMiddleware'); // Import the auth middleware
+const authMiddleware = require('../middleware/authMiddleware'); // Import auth middleware
 const router = express.Router();
+
+// Ensure 'uploads/' directory exists
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/'); // Save to 'uploads/' directory
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // for unique file name
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
     }
 });
 
-// File filter for image validation (optional)
+// File filter for image validation
 const fileFilter = (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|gif/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
-
     if (mimetype && extname) {
         return cb(null, true);
     }
     cb(new Error('Error: File type not allowed!'), false);
 };
 
-const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter // Add file filter
-});
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-// Get all employees - Protected Route
+// Route to get all employees (Protected Route)
 router.get('/get', authMiddleware, async (req, res) => {
     try {
         const employees = await Employee.find();
@@ -42,9 +45,12 @@ router.get('/get', authMiddleware, async (req, res) => {
     }
 });
 
-// Create a new employee - Protected Route
+// Route to add a new employee (Protected Route)
 router.post('/add', authMiddleware, upload.single('picture'), async (req, res) => {
     try {
+        console.log('Request Body:', req.body); // Log request body for debugging
+        console.log('Uploaded File:', req.file); // Log file upload information
+
         const { name, email, mobile, gender, designation, course } = req.body;
         const picturePath = req.file ? `/uploads/${req.file.filename}` : '';
 
@@ -61,11 +67,12 @@ router.post('/add', authMiddleware, upload.single('picture'), async (req, res) =
         await newEmployee.save();
         res.status(201).json(newEmployee);
     } catch (error) {
+        console.error("Error in add employee route:", error); // Log error
         res.status(400).json({ error: error.message });
     }
 });
 
-// Edit Employee - Protected Route
+// Route to edit an employee by ID (Protected Route)
 router.put('/edit/:id', authMiddleware, upload.single('picture'), async (req, res) => {
     try {
         const employeeId = req.params.id;
@@ -81,7 +88,7 @@ router.put('/edit/:id', authMiddleware, upload.single('picture'), async (req, re
                 gender,
                 designation,
                 course,
-                ...(picturePath ? { picture: picturePath } : {}),
+                ...(picturePath ? { picture: picturePath } : {})
             },
             { new: true }
         );
@@ -92,15 +99,15 @@ router.put('/edit/:id', authMiddleware, upload.single('picture'), async (req, re
 
         res.status(200).json(updatedEmployee);
     } catch (error) {
+        console.error("Error in edit employee route:", error); // Log error
         res.status(400).json({ error: error.message });
     }
 });
 
-// Delete by id - Protected Route
+// Route to delete an employee by ID (Protected Route)
 router.delete('/delete/:id', authMiddleware, async (req, res) => {
     try {
         const employeeId = req.params.id;
-
         const deletedEmployee = await Employee.findByIdAndDelete(employeeId);
 
         if (!deletedEmployee) {
@@ -109,11 +116,12 @@ router.delete('/delete/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json({ message: 'Employee deleted successfully' });
     } catch (error) {
+        console.error("Error in delete employee route:", error); // Log error
         res.status(400).json({ error: error.message });
     }
 });
 
-// Testing route
+// Testing route to confirm server connection
 router.get('/message', async (req, res) => {
     try {
         res.send("Connected to Server message from backend");

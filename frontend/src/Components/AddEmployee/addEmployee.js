@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import './addEmployee.css';
-import axios from 'axios'; 
+import axios from 'axios';
 
 class AddEmployeeForm extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class AddEmployeeForm extends Component {
             picture: null,
             addDate: new Date().toISOString().slice(0, 10)
         };
-        
+
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -29,30 +29,37 @@ class AddEmployeeForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        
+
         const formData = new FormData();
         for (const key in this.state) {
             formData.append(key, this.state[key]);
         }
 
-        axios.post('http://localhost:5000/api/employeeRoutes/add', formData)
-            .then(response => {
-                alert('Employee added successfully!'); // Show alert on success
-                // Optionally, reset the form or redirect the user
-                this.setState({
-                    name: '',
-                    email: '',
-                    mobile: '',
-                    designation: '',
-                    gender: '',
-                    course: 'Computer Science',
-                    picture: null,
-                });
-            })
-            .catch(error => {
-                console.error("There was an error adding the employee:", error);
-                alert('Error adding employee. Please try again.'); // Show alert on error
+        // Retrieve token from localStorage (or your preferred storage location)
+        const token = localStorage.getItem('token'); // Ensure token is available
+
+        axios.post('http://localhost:5000/api/employeeRoutes/add', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`,  // Include token for authorization
+            }
+        })
+        .then(response => {
+            alert('Employee added successfully!');
+            this.setState({
+                name: '',
+                email: '',
+                mobile: '',
+                designation: '',
+                gender: '',
+                course: 'Computer Science',
+                picture: null,
             });
+        })
+        .catch(error => {
+            console.error("There was an error adding the employee:", error);
+            alert('Error adding employee. Please try again.');
+        });
     }
 
     render() {
