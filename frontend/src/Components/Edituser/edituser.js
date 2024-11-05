@@ -47,10 +47,14 @@ class EditEmployeeForm extends Component {
         }
 
         try {
+            // Retrieve the token from local storage or context
+            const token = localStorage.getItem('token'); // Adjust this according to your auth implementation
+
             await axios.put(`http://localhost:5000/api/employeeRoutes/edit/${employee._id}`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`, // Include the token here
+                },
             });
             alert("Employee updated successfully!");
 
@@ -60,7 +64,11 @@ class EditEmployeeForm extends Component {
             }
         } catch (error) {
             console.error("Error updating employee:", error);
-            alert("Failed to update employee. Please try again.");
+            if (error.response) {
+                alert(`Failed to update employee: ${error.response.data.message || 'Unauthorized'}`);
+            } else {
+                alert("Failed to update employee. Please try again.");
+            }
         }
     }
 
