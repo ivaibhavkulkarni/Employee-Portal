@@ -15,7 +15,22 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+// File filter for image validation (optional)
+const fileFilter = (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    }
+    cb(new Error('Error: File type not allowed!'), false);
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter // Add file filter
+});
 
 // Get all employees - Protected Route
 router.get('/get', authMiddleware, async (req, res) => {
@@ -66,7 +81,7 @@ router.put('/edit/:id', authMiddleware, upload.single('picture'), async (req, re
                 gender,
                 designation,
                 course,
-                ...(picturePath && { picture: picturePath }),
+                ...(picturePath ? { picture: picturePath } : {}),
             },
             { new: true }
         );

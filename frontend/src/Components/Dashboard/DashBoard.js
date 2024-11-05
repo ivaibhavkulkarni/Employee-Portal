@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component } from 'react'; 
 import './DashBoard.css';
 import DashboradNav from '../DashboradNavbar/dashboardnav';
 import Table from '../Table/table';
@@ -8,20 +8,24 @@ import axios from 'axios';
 
 class Dashboard extends Component {
     state = {
-        employees: [],  // Initially empty; will be populated by API data
+        employees: [],
         activitySection: 'welcome',
         isEditing: false,
         editingEmployeeId: null,
     };
 
     componentDidMount() {
-        // Fetch employees data when the component mounts
         this.fetchEmployees();
     }
 
     fetchEmployees = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/employeeRoutes/get');
+            const token = localStorage.getItem('token'); // Get the token from local storage
+            const response = await axios.get('http://localhost:5000/api/employeeRoutes/get', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Add the token to the headers
+                }
+            });
             this.setState({ employees: response.data });
         } catch (error) {
             console.error("Error fetching employees:", error);
@@ -31,29 +35,32 @@ class Dashboard extends Component {
     handleEdit = (_id) => {
         this.setState({
             isEditing: true,
-            editingEmployeeId:_id,
+            editingEmployeeId: _id,
             activitySection: 'editEmployee',
         });
     };
 
     handleDelete = async (_id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/employeeRoutes/delete/${_id}`);
-            this.fetchEmployees();  // Refresh the employees list after deletion
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:5000/api/employeeRoutes/delete/${_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include token for delete request
+                }
+            });
+            this.fetchEmployees();
         } catch (error) {
             console.error("Error deleting employee:", error);
         }
     };
 
     handleNavClicks = (section) => {
-        // Update activity section and reset editing status
         this.setState({
             activitySection: section,
             isEditing: false,
             editingEmployeeId: null,
         });
 
-        // Fetch employees if navigating to the employee list section
         if (section === 'employeeList') {
             this.fetchEmployees();
         }
