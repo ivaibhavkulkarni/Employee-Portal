@@ -11,6 +11,10 @@
 - Add/Edit/Delete Employee: Admins can manage employee records via a responsive form.
 - Impact: Simplified employee data management with secure user authentication.
 
+## Future Enhancements (In Progress)
+- Docker Integration:
+Adding Docker support for containerization, enabling easier deployment and scalability of the application across different environments.
+
 ## Screen Recording
 
 
