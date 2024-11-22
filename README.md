@@ -10,3 +10,13 @@
 - Employee Management: Employee list includes ID, name, picture, designation, and contact details.
 - Add/Edit/Delete Employee: Admins can manage employee records via a responsive form.
 - Impact: Simplified employee data management with secure user authentication.
+
+## Future Enhancements (In Progress)
+- Docker Integration:
+Adding Docker support for containerization, enabling easier deployment and scalability of the application across different environments.
+
+## Screen Recording
+
+
+https://github.com/user-attachments/assets/0ae7f230-680a-4346-8b71-09e52df78cf3
+
